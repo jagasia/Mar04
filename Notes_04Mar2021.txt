@@ -1,0 +1,817 @@
+E-R diagram
+
+	MS Visio
+	Rational Rose
+	Jude
+		these tools help us draw UML diagram
+
+In ER diagram,
+	Entities	(Rectange)
+	Attributes	(Oval)
+	Relationship	(Diamond)
+
+	There will be connecting lines between them
+
+Bank Project:
+	Customer	may have 1 or more account
+	Account		is the relationship between a branch and a customer
+	Branch
+
+Hospital:
+	What is the relationship between Doctor and Patient?
+		Checkup
+		Treatment
+		Consultation
+		Appointment
+
+
+After identifying the Entities involved in a Business
+
+before drawing ER diagram
+	identify their multiplicity
+	1 to 1
+	1 to M
+	M to 1
+	M to M
+
+A Department has A Department Head
+
+	1 to 1		(Department		DepartmentHead)
+
+	DEPARTMENT
+		ID, DNAME, LOCATION, CAPACITY
+	DEPARTMENT_HEAD
+		DHID, DID, NAME, DATE_OF_BIRTH, ST_DATE, END_DATE(IF IS NULL, HE IS CURRENTLY HEAD)
+
+A DEPARTMENT HAS MANY EMPLOYEES
+
+	1 to M		(DEPARTMENT		EMPLOYEE)
+		1 will join many (rule)
+		what is 1 here?	1 Dept has many emp. So dept is 1. so this did will join employee table
+		what else could be a solution. Try other way?
+			1 dpt has many emp, so how to represent emp in dept table? NOT POSSIBLE
+	DEPARTMENT
+		ID, DNAME, LOCATION, CAPACITY
+	EMPLOYEE
+		ID, NAME, JOIN_DATE, DESIGNATION, SALARY, DID
+
+		NOTICE THAT ID (DEPARTMENT) IS MAPPED TO DID IN EMPLOYEE TABLE
+		THE column names are different. But they are common column only
+
+	Yes. To creaet a foreign key, the column name in child table can be different from the column name of parent table
+
+	M to 1 is nothing but you are seeing from the other side	(Employee vs Department)
+	
+Many to Many
+Customer Purchase Product
+	how to represent this relationship in ER diagram or Tables????
+
+	CUSTOMER 
+		ID, NAME, ADDRESS, PHONE, EMAIL
+
+	PRODUCT
+		ID, NAME, PRICE 			(HOW TO REPRESENT CUSTOMER HERE????	NO)
+
+	M-M relationship will become another entity
+	
+	PURCHASE	(Entity)
+		purchase_id, pdate, pid, cid, qty
+
+In ER diagram, foreign key columns are not represented at all.
+	ex:
+		EMPLOYEE
+			EID, NAME, DID	
+		This is in tables
+		But in ER diagram	
+		EMPLOYEE
+			EID, NAME		(NO DID HERE)
+
+
+--------------------------
+Normalization
+-------------
+	1 Entity in ER diagram may be translated into 1 or more table(s)
+	ex:
+		in er diagram, there was STUDENT entity
+		STUDENT
+			id, name, address, phone, email, parentName, guardianName, parent_phone, tenth_mark, twelth_mark, graduation_grade
+
+	but in tables
+		STUDENT_MASTER		ID, NAME
+		STUDENT_CONTACT		ID, ADDRESS, PHONE, EMAIL
+		STUDENT_EDU_DETAILS	TENTH, TWELTH,.....
+
+
+How 1 entity became, 3 tables?
+	Because of Normalization
+
+What is normalization?
+	to reduce redundancy in tables
+	precess of decomposition of a relation
+	overcome the anamolies
+	
+Normalization is a scientific method to arrive at a database structure from the ER diagram.
+	A large table, is more prone to redundant data
+
+	STUDENT 
+		ID 	NAME	ADDRESS PHONE	EMAIL	PARENT NAME	TENTH	TWELTH	GRADUATION
+		1	Rama	Mumbai	989898	ra@ma.c	Krishna		90	88	77
+		1	Rama	Chennai	989898	ra@ma.c	Krishna		90	88	77
+		1	Rama	Chennai	787878	ra@ma.c	Krishna		90	88	77
+		1	Rama	Chennai	787878	ma@kr.c	Krishna		90	88	77
+
+		
+STUDNT
+	ID	NAME	PARENT....
+	1	Rama
+
+STUDENT_CONTACT
+	ID	ADDRESS 	PHONE	EMAIL
+	1	Mumbai		9898989	ra@ma.c
+	1	Chennai		9898989	ra@ma.c
+	1	Chennai		7878787	ra@ma.c
+	1	Chennai		787878	ma@kr.c
+STUDENT_MARKS
+	ID	TENTH	TWELTH	GRADUATION
+	1	90	88	77			(not changed in 3 more occassions)
+
+
+If the table is divided into logical units, we found that any updation affects only 1 table and not other tables
+And reduces redudant data (repeatation)
+
+In ATTENDANCE TABLE
+
+	ID	DATE	STATUS
+	1	TODAY	P
+	1	TOMO	A
+
+	Notice that Attendance table do not have NAME, ADDRESS, PHONE, EMAIL.......
+
+If the STUDENT Changes his name, then it will not affect all attendance records.
+
+
+what are normal forms:
+	A normalization process is done in several stages. In each stage, after spliting the table, the tables will be considered to be in a particular normal form.
+
+	In first stage, what is our aim?
+	We expect the table to contain data in such a way that each cell in the table, contains only 1 data only.
+
+123, Raja stre, Main road, Coimbatore - 641002, Tamil Nadu	(UNNORMALIZED)
+address1	address2	city	pin	state		(NORMALIZED)
+
+One cell having lot of data, is not very good for data mining
+split them into multiple columns and ensure that 1 cell contains only 1 data	(1st normal form)
+
+CUSTOMER is a domain neutral term.
+	PATIENT
+	PASSENGER
+	STUDENT
+	TENENT
+	
+	these are all domain specific table names
+	attributes are the columns in the table.	(attribute is for entity. column is for table)
+
+
+A relation is in first normal form if and only if the domain of each attribute contains only atomic (indivisible) values, and the value of each attribute contains only a single value from that domain
+
+	
+if PATIENT is a table
+	every row is 1 patient
+
+if PATIENT is an entity
+	every entity is a patient
+so here, entity may sound like a table or a row in the table
+
+
+Second normal form:
+	a table is said to be in second normal form, if
+		it is in 1st normal form and
+		all its (non prime) attributes are functionally dependent on  the whole key
+
+	Remove columns which are dependent on part of (CITY)the entity AND not on whole key	(STUDENT)
+
+A relation is in the second normal form if it fulfills the following two requirements:
+
+It is in first normal form.
+It does not have any non-prime attribute that is functionally dependent on any proper subset of any candidate key of the relation. A non-prime attribute of a relation is an attribute that is not a part of any candidate key of the relation.
+
+Third Normal Form:
+A database relation (e.g. a database table) is said to meet third normal form standards if all the attributes (e.g. database columns) are functionally dependent on solely the primary key. 
+
+ex:
+	EMPLOYEE_CONTACT
+	EMPLOYEE_PERSONAL
+	EMPLOYEE_FAMILY
+	EMPLOYEE_EDU_DETAILS
+		In edu details, even if an attribute is dependent on employee, but if it is not dependent on primary key, it is removed
+		noOfChildren is dependent on employee, but it is not dependent on primary key (emp_edu_id)
+
+Boyce Codd normal form
+	A table is said to be in BCNF if there are more than 1 candidate key, and they are composite and they are overlapping
+
+
+Denormalization:
+	intentional introduction of some amount of redundancy to improve the efficiency of queries
+
+	ex:
+		There are only few aircrafts in our company. And every year we may purchase maximum 1 aircraft. so there will be very less records in aircraft table.
+	so instead of splitting aircraft table into many child tables, we may merge them back to allow some redundancy.	Hence a query may not require JOINs. Becaus  of that, the query result comes fast.
+
+------------------------------------------
+SQL
+----
+	Yesterday, you learnt
+	SELECT
+		COLUMN LIST
+		WHERE condition
+		ORDER BY 1 or more columns in asc, desc
+		SUB QUERY that returns 1 row	or more row with IN , NOT IN, >=ALL, ANY
+		GROUP BY
+		HAVING
+		FUNCTIONS, AGGREGATE, NON AGGREGATE
+
+	
+
+select c.custid, c.fname, c.ltname
+from customer c
+join loan l
+on c.custid=l.custid
+group by c.custid, c.fname, c.ltname
+having count(l.bid)>1
+
+
+SELECT custid, fname, ltname 
+from customer
+where custid in
+(
+select custid from loan
+group by custid
+having count(bid)>1
+)
+
+
+
+
+SELECT count(*) from customer
+where custid not in (select custid from account)
+and
+custid in (select custid from loan);
+
+we can remove customer table in this query, because, we dont need to display any columns from that table
+-----------------like below--------------------
+
+select count(*) from loan
+where custid not in 
+(select custid from account);
+
+
+This is using sub query.
+How to do it in joins?
+
+custid in (select custid from loan);	//THIS CAN BE DONE IN INNER JOIN
+
+What is inner join?
+	Only matching records are obtained in inner join.	(A join is usually inner join only)
+
+
+select count(*) from customer c
+join loan l
+on c.custid=l.custid
+left join account a
+on c.custid=a.custid
+where a.custid is null;
+
+
+
+select count(*) from loan l
+left join account a
+on l.custid=a.custid
+where a.custid is null
+
+left outer join produces all records from left table and matching records from right side table. For no matching, they display null.
+
+That null is an opportunity to decide that they dont have account at all
+customer id that do not have acnumber is considered as no account
+
+
+select t.acnumber, sum(t.transaction_amount)+a.opening_balance
+from trandetails t
+join account a
+on t.acnumber=a.acnumber
+where t.transaction_type='Deposit'
+group by t.acnumber, a.opening_balance
+
+
+
+SELECT count(*) FROM CUSTOMER 
+where custid not in
+(select custid from account);
+
+
+count(*) counts the number of rows
+count(col1) counts the not null values in the column
+
+
+select fname from customer
+where custid in
+(select a.custid
+from customer c
+join account a
+on c.custid=a.custid
+group by a.custid
+having count(a.acnumber)>1)
+
+select fname from customer where custid in
+(
+select custid from account
+group by custid
+having count(bid)>1
+)
+
+
+SELECT c.custid, c.fname, a.acnumber, count(tnumber) as "Count_Trans"
+from customer c
+join account a
+on c.custid=a.custid
+join trandetails t
+on t.acnumber=a.acnumber
+group by c.custid, c.fname, a.acnumber
+
+
+Highest aggregate
+
+
+select acnumber, count(tnumber)
+from trandetails
+group by acnumber
+having count(tnumber)>=all
+(select count(tnumber)
+from trandetails
+group by acnumber)
+
+
+select acnumber, count(tnumber)
+from trandetails
+group by acnumber
+--having count(tnumber)=6;        --  6 is max(6,3,3)         max(count(tnumber)
+having count(tnumber)=
+(select max(count(tnumber))
+from trandetails
+group by acnumber);
+
+
+
+
+SELECT * FROM (SELECT ......)
+
+HERE, THE SUB QUERY LOOKS LIKE A TEMPORARY TABLE
+THIS IS INLINE SUB QUERY
+
+
+select B.bname,b.bcity,T1.CNT from (select bid, COUNT(CUSTID) CNT
+from account
+group by bid
+having count(custid)=
+(select max(count(custid))
+from account
+group by bid)) T1
+JOIN Branch B
+on B.bid=T1.bid;
+
+
+
+SELECT SUM(
+case transaction_type
+when 'Deposit' then transaction_amount
+when 'Withdrawal' then transaction_amount*-1
+end)+a.opening_balance
+FROM trandetails t
+join account a
+on t.acnumber=a.acnumber
+where a.custid='C00001'
+group by t.acnumber,a.opening_balance;
+
+
+
+
+SELECT w.acnumber,  d.DEPOSIT, W.WITHDRAWAL FROM 
+(
+SELECT ACNUMBER, SUM(TRANSACTION_AMOUNT) AS WITHDRAWAL
+FROM TRANDETAILS
+WHERE TRANSACTION_TYPE='Withdrawal'
+GROUP BY ACNUMBER
+) W JOIN
+(SELECT ACNUMBER, SUM(TRANSACTION_AMOUNT) AS DEPOSIT
+FROM TRANDETAILS
+WHERE TRANSACTION_TYPE='Deposit'
+GROUP BY ACNUMBER) D
+ON W.ACNUMBER=D.ACNUMBER
+WHERE WITHDRAWAL>DEPOSIT;
+
+
+SELECT c.custid, c.fname, c.ltname
+FROM customer c
+WHERE custid = (SELECT custid 
+		FROM loan 
+		GROUP BY custid 
+		HAVING sum(loan_amount) = (SELECT max(c) 
+					FROM (SELECT sum(loan_amount) c 
+						FROM loan 
+						GROUP BY custid)temp
+					    )
+		);
+
+
+==========================================================================================
+DML		-		Data Manipulation Language
+
+	INSERT
+	UPDATE
+	DELETE
+	MERGE
+
+INSERT	statement is used to add one or more records into the table
+
+INSERT INTO branch VALUES ('B00010','MG Road','Bengaluru');	
+	--correct order of values
+	--all the values must be supplied 
+
+	
+INSERT INTO branch (bname, bid, bcity)VALUES ('OMR','B00011','Chennai');	
+	--specify the columns for which we supply the values
+	--only specify the columns which are mandatory. Some columns can be NULL. we need not specify them
+	--some columns have default value, we need no specify that
+
+
+
+CREATE TABLE DUMMY2
+(
+    SNO INT PRIMARY KEY,
+    NAME VARCHAR2(20) NOT NULL,
+    AGE INT,
+    COUNTRY VARCHAR2(20) DEFAULT 'INDIA'
+);
+
+
+INSERT INTO DUMMY2 VALUES (1, 'Raja', null, default);
+
+
+INSERT INTO DUMMY10 
+SELECT * FROM DUMMY2;
+
+INSERT ALL
+    INTO table_name(col1,col2,col3) VALUES(val1,val2, val3)
+    INTO table_name(col1,col2,col3) VALUES(val4,val5, val6)
+    INTO table_name(col1,col2,col3) VALUES(val7,val8, val9)
+
+
+INSERT [ ALL | FIRST ]
+    WHEN condition1 THEN
+        INTO table_1 (column_list ) VALUES (value_list)
+    WHEN condition2 THEN 
+        INTO table_2(column_list ) VALUES (value_list)
+    ELSE
+        INTO table_3(column_list ) VALUES (value_list)
+Subquery
+
+
+summary:
+	INSERT statement is DML statement which runs in an implicit transaction.
+	In SQL Developer, AUTO COMMIT is FALSE.
+
+	SO until we issue commit statement, the changes we have done in the db using sql developer is not permanent.
+	So other transactions may not be able to see your changes until you commit...
+
+open sql plus
+	check the records present in dummy2. Only committed records are visible in sql plus
+	
+only DML statements can be committed or rolledback.
+
+----------------------------------------------------------------------------------
+UPDATE
+	Update is a DML statement which is used to update existing records.
+	we can update the values present in the records. Except primary key column, all other columns can be updated
+
+	UPDATE DUMMY2 SET COUNTRY='BANGLADESH' WHERE SNO=1;
+
+		UPDATE DUMMY2 SET COUNTRY='PAKISTAN', NAME='KADER', AGE=20 WHERE SNO=1;
+	
+	UPDATE DUMMY2 SET COUNTRY='INDIA';	--SINCE THERE IS NO WHERE CONDITION, ALL ROWS AFFECTED
+
+	In update, we can use conditions using WHERE
+	THE CONDITION CAN USE OPERATORS LIKE 
+		=
+		!=
+		>
+		<
+		...etc
+	and the condition also use sub query
+
+------------------------------------------------------------------------------------
+
+DELETE
+	DELETE FROM DUMMY2 WHERE SNO=1;
+	DELETE DUMMY2 WHERE SNO=2;
+	DELETE FROM DUMM2;	--SINCE THERE IS NO WHERE CONDITION, ALL ROWS DELETED
+
+	Conditions can use sub query also
+
+---------------------------------------------------------------------------------------
+MERGE
+	CONDITIONALLY 
+		INSERT OR UPDATE
+	IF ROW ALREADY EXIST, UPDATE, ELSE INSERT
+
+Ex:
+	THERE IS A TABLE DEPARTMENTS
+	WE create a backup table called DEPARTMENTS1
+
+	Every day, we take a backup of DEPARTMENTS table records by copying them into DEPARTMENTS1
+
+	First day, it was simple. Just copy all the records into DEPARTMENTS1
+	Next day onwards, only the changes happened needs to be updated.
+	Some new records added to DEPARTMENTS, they must be added to DEPARTMENTS1
+	some existing records are modified, they must be updated to DEPARTMENTS1
+
+
+Task:
+	create 2 tables based on DEPARTMENTS
+	1) DEPARTMENTS1
+	2) DEPARTMENTS2
+
+		CREATE TABLE DEPARTMENTS1 AS SELECT * FROM DEPARTMENTS;
+
+
+	Then modify some records in DEPARTMENTS1	
+		-INSERT
+		-UPDATE
+
+	MERGE the changes happened in DEPARTMENTS1 into DEPARTMENTS2
+
+
+SOLUTION:
+	MERGE INTO DEPARTMENTS2 D2
+    USING (SELECT * FROM DEPARTMENTS1)D1
+    ON (D2.DEPARTMENT_ID=D1.DEPARTMENT_ID)
+    WHEN MATCHED THEN UPDATE SET D2.DEPARTMENT_NAME=D1.DEPARTMENT_NAME,
+        D2.MANAGER_ID=D1.MANAGER_ID, D2.LOCATION_ID=D1.LOCATION_ID
+    WHEN NOT MATCHED THEN INSERT VALUES (D1.DEPARTMENT_ID, D1.DEPARTMENT_NAME,
+    D1.MANAGER_ID, D1.LOCATION_ID);    
+
+
+YOU HAVE LEARNED DML
+---------------------
+
+DDL		-	Data Definition Language
+
+	CREATE
+	ALTER
+	DROP
+	TRUNCATE
+	RENAME
+Create:
+	Create a table as follows:
+
+CREATE TABLE OLYM_GAMES (
+    ID NUMBER(22) NOT NULL,
+    YEAR NUMBER(22)NOT NULL,
+    SEASON varchar2(10) NOT NULL,
+    CITY varchar(30) NOT NULL
+);
+
+
+while creating a table,
+	we can define the constraints at the column level or at the table level
+
+create table student2
+(
+    student_id int PRIMARY KEY,
+    first_name varchar2(100),
+    last_name varchar2(100)
+);
+
+----------------(OR)------------
+
+create table student2
+(
+    student_id int,
+    first_name varchar2(100),
+    last_name varchar2(100),
+    constraint pksid2 PRIMARY KEY(student_id)
+);
+
+
+--------------------------------------------------
+Task:
+	You created a table OLYM_GAMES
+
+	now, add a primary key constraint using ALTER TABLE statement
+
+
+	ALTER TABLE OLYM_GAMES ADD PRIMARY KEY(ID);
+
+using ALTER statement, we can:
+	add column
+	drop column
+	modify column
+	add constraint
+	drop constraint
+	
+
+Task:
+	in the OLYM_GAMES table, 
+		add a column "COUNTRY" of type varchar2(100) not null
+
+
+
+alter table olym_games add (Country varchar2(100) not NULL);
+
+ALTER TABLE OLYM_GAMES ADD COUNTRY VARCHAR2(100) NOT NULL;
+
+
+Task:
+	in the OLYM_GAMES table,
+		modify the column country to type NVARCHAR2(100)
+
+
+ALTER TABLE OLYM_GAMES MODIFY COUNTRY NVARCHAR2(100);
+
+Task:
+	in the OLYM_GAMES table,
+		remove the column country
+
+
+Suppose there is a table called 
+	CITY_MASTER
+columns are
+	CID, CNAME, STATE, COUNTRY
+	1, Mumbai, Maharashtra, India
+	2, Chennai, Tamil Nadu, India
+	3, Hyderabad, Telangana, India
+	4, Kolkata, West Bengal, India
+	5, Navi Mumbai, Maharashtra, Indian
+	
+
+tABLE:	CUSTOMER
+	
+	CUSTOMER_ID, NAME, CITY_ID
+	101, RAJA, 4
+	102, SIVA, 1
+	103, RAGHU, 1
+	104, ABDUL, 5
+	
+
+
+
+
+NOTICE The column "CITY_ID".		why not CITY itself
+	if you allow user to enter city itself,
+
+	they will enter
+		Calcatta
+		Kolkata
+		Bombay
+		Mumbai
+		Madras
+		Chennai
+		
+
+if we get city wise count,
+
+	we will get less number of Kolkata	(because, some comes under Calcutta)
+
+
+Does this create an inconvenience while entering the data?
+user cannot remember the city code. User knows only the city name
+	so in HTML, <select><option>	drop downlist, 
+		we can display City Names and on selecting the name, corresponding ID can be considered
+
+	<option value="4">Kolkata</option>
+
+If user choose "Kolkata" in ddlist, 4 is obtained
+
+sir, if he choose in ddlist, he wont enter "Calcutta".
+yes, this time, user entry is not a problem. But our management changes Kolkata to Calcutta or vice versa, then we need to update lot of records.
+
+So in back end, only "4" is maintained wherever Kolkata is required. If Kolkata changed to Calcutta, it is updated only in city master table. Not in customer table
+
+----------------------------------------
+VIEWs
+-----
+	What is view?
+		In SQL. nOT IN MVC.
+
+	View is a database object created in the database that represent a query. 
+	View is like a named query.
+	View looks like a table. It is a virtual table. There are no records stored in view
+	View is nothing but a query. data is not present in view. 
+	While executing view, in fact while querying view, the data is displayed from underlying table. View does not have a copy of those rows.
+
+	
+	create a view that represent a complex query but looks easy to execute.
+
+EX:
+	CREATE VIEW vw1 AS
+		SELECT * FROM DEPARTMENTS WHERE DEPARTMENT_ID<90;
+
+How view can help us?
+	1) in RDBMS, we can grant privileges to only certain table to certain users.
+		so users cannot query on certain tables where they do not have permission.
+		
+	we can create a view that will select only certain columns and GRANT permission to the user
+
+	2) restrict user to view only certain columns of a table or tables
+	3) restrict user to view only certain roles based on condition
+	4) display derived values	(ex: 	account balance)
+	5) can hide the original column name	(using alias)
+
+
+-----------------------
+Can we do DML on views?
+	DML (insert, update, delete) is possible on views only when 
+		the operation affects columns of only 1 table
+
+	1) if we try to insert row on view,
+		if we supply values for all the NOT NULL columns 
+		of only 1 table, then IT IS ALLOWED
+
+	2) if we try to update rows on view,
+		we may modify 1 or more columns 
+		of only 1 table, then IT IS ALLOWED
+
+	3) we CANNOT assign value for a derived column	(ex: BALANCE)
+
+Note:	Identify the scenarios where DML is allowed on a VIEW
+
+---------------------
+tASK:
+	Create a composite primary key and
+	reference that primary key by a foreign key in another table 
+
+	CREATE TABLE TABLE1
+	(
+	    COL1 INT,
+	    COL2 INT,
+	    COL3 VARCHAR2(100),
+	    CONSTRAINT pkt1 PRIMARY KEY(COL1, COL2)
+	);
+
+	CREATE TABLE TABLE2
+	(
+	    COL1 INT,
+	    C1 INT,
+	    C2 INT,
+	    CONSTRAINT fkt1 FOREIGN KEY(C1, C2) REFERENCES TABLE1(COL1,COL2)
+	)
+
+
+
+Sub queries in detail:
+----------------------
+
+SELECT * FROM TABLE1 WHERE COL1 IN (SELECT C1 FROM TABLE2 WHERE 1=1);
+
+SELECT * FROM (SELECT COL1, COL2 FROM TABLE1);	-- Inline sub query
+
+this inline subquery is also called as Inline view
+
+
+When to use JOIN, when to use Sub query?
+	when we need to retrieve columns from more than 1 table, we use join
+	when we display columns only from 1 table, we need not use join, we use sub query
+
+
+EXISTS		and	NOT EXISTS
+	these operators are used to write correlated subquery
+
+Task:
+	Display all customers who do not have any account.
+	Note: Use exists or not exists operator
+
+Usually sub query executes first independantly. 
+	But in correlated subquery, the sub query depends on outer query for its execution
+
+
+Aggregate functions produce 1 result per relation
+
+	sum(salary)		produce only 1 value for entire table
+	but when we use group by, it produce 1 value per group
+
+Task:
+	IDENTIFY all aggregate functions in Oracle
+
+
+RANK	works with order by
+
+SELECT department_id, last_name, salary,
+       RANK() OVER (PARTITION BY department_id ORDER BY salary) RANK
+  FROM employees --WHERE department_id = 60
+  ORDER BY  department_id, rank, last_name;
+
+
+SELECT department_id, last_name, salary,
+       dense_RANK() OVER (PARTITION BY department_id ORDER BY salary) RANK
+  FROM employees --WHERE department_id = 60
+  ORDER BY  department_id, rank, last_name;
+
+
